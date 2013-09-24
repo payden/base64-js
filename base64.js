@@ -38,9 +38,9 @@ Base64.prototype = {
       output += "=";
     } else if (len == 1) {
       var num = 0;
-      num = bytes[i].charCodeAt(0) << 4; //four bits padding
-      output += this.base64chars[num >> 6];
-      output += this.base64chars[num & 0x3f];
+      num = bytes[i].charCodeAt(0);
+      output += this.base64chars[num >> 2];
+      output += this.base64chars[(num & 0x3) << 4];
       output += "==";
     }
     return output;
@@ -63,11 +63,11 @@ Base64.prototype = {
   },
 
   decode: function(b64str) {
-    if (b64str.length % 4 != 0) {
+    if (b64str.length & 3) {
       console.log("String is not a multiple of four, invalid Base64 or no padding.");
       return false;
     }
-    var count = b64str.length / 4;
+    var count = b64str.length >> 2;
     var str = "";
     for (var i = 0; i < count; i++) {
       var start = i * 4;
